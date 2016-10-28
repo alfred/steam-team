@@ -1,0 +1,25 @@
+{
+  "name": "steam-team",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alfred/steam-team.git"
+  },
+  "author": "Alfred Ababio, Joana Vukatana, Matthew Miller",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alfred/steam-team/issues"
+  },
+  "homepage": "https://github.com/alfred/steam-team#readme",
+  "dependencies": {
+    "express": "4.14.0"
+  },
+  "devDependencies": {
+    "gulp": "3.9.1"
+  }
+}
