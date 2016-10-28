@@ -2,7 +2,7 @@
   "name": "steam-team",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "lib/app.js",
   "scripts": {
     "test": "npm test"
   },
@@ -17,9 +17,15 @@
   },
   "homepage": "https://github.com/alfred/steam-team#readme",
   "dependencies": {
+    "bluebird": "3.4.6",
     "express": "4.14.0"
   },
   "devDependencies": {
-    "gulp": "3.9.1"
+    "del": "2.2.2",
+    "gulp": "3.9.1",
+    "gulp-eslint": "3.0.1",
+    "gulp-nodemon": "2.2.1",
+    "gulp-nunjucks-render": "2.0.0",
+    "gulp-sass": "2.3.2"
   }
 }
