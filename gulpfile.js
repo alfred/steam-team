@@ -9,6 +9,7 @@ const lintClient = require('./build/tasks/lint-client');
 const template = require('./build/tasks/templates');
 const start = require('./build/tasks/start');
 const watch = require('./build/tasks/watch');
+const mocha = require('./build/tasks/test');
 
 [
   clean,
@@ -17,7 +18,8 @@ const watch = require('./build/tasks/watch');
   lintClient,
   template,
   start,
-  watch
+  watch,
+  mocha
 ].forEach( task => {
   task( gulp );
 });
@@ -29,3 +31,5 @@ gulp.task( 'build', [
   'templates',
   'watch'
 ]);
+
+gulp.task( 'test', [ 'mocha' ] );

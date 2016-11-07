@@ -25,6 +25,8 @@
     "del": "2.2.2",
     "gulp": "3.9.1",
     "gulp-eslint": "3.0.1",
+    "gulp-istanbul": "1.1.1",
+    "gulp-mocha": "3.0.1",
     "gulp-nodemon": "2.2.1",
     "gulp-nunjucks-render": "2.0.0",
     "gulp-sass": "2.3.2"
