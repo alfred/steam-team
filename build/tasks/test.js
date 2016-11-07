@@ -13,7 +13,7 @@ module.exports = gulp => {
       .pipe( istanbul.hookRequire() );
   });
 
-  gulp.task( 'mocha', () => {
+  gulp.task( 'mocha', [ 'pre-test' ], () => {
     return gulp.src( [ testPath ] )
       .pipe( mocha() )
       .pipe( istanbul.writeReports() )
