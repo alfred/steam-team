@@ -4,7 +4,7 @@
   "description": "",
   "main": "lib/app.js",
   "scripts": {
-    "test": "npm test"
+    "test": "gulp mocha"
   },
   "repository": {
     "type": "git",
