@@ -4,11 +4,15 @@ const istanbul = require('gulp-istanbul');
 const mocha = require('gulp-mocha');
 
 const srcPath = 'lib/**/*.js';
+const serverFile = '!lib/app.js';
 const testPath = 'test/lib/**/*.js';
 
 module.exports = gulp => {
   gulp.task( 'pre-test', () => {
-    return gulp.src( [ srcPath ] )
+    return gulp.src( [
+      srcPath,
+      serverFile
+      ])
       .pipe( istanbul( { includeUntested: true } ) )
       .pipe( istanbul.hookRequire() );
   });
