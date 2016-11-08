@@ -116,5 +116,22 @@ describe( 'lib/resources/steam', () => {
       });
 
     });
+
+    it( 'throws if theres an error with steamGET', done => {
+      let steam = require('rewire')( modulePath );
+      steam.__set__( 'steamGET', () => {
+        return Promise.reject( new Error() );
+      });
+
+      steam.getUserIdFromUsername()
+      .then( res => {
+        assert.ok( false );
+        done( res );
+      })
+      .catch( err => {
+        assert.ok( true );
+        done();
+      })
+    });
   });
 });
