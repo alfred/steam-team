@@ -97,19 +97,24 @@ describe( 'lib/resources/steam', () => {
       steam.getUserIdFromUsername('atlas32');
     });
 
-    it( 'returns a userId given a username', () => {
+    it( 'returns a userId given a username', done => {
       let steam = require('rewire')( modulePath );
+      let mockResponse = {
+        "body" : '{ "response": { "steamid": "76561198185570222" } }'
+      }
+      steam.__set__( 'steamGET', () => Promise.resolve( mockResponse ) );
 
-      steam.__set__( 'steamGET', ( url, opts ) => {
-        return {
-          body : '{"response":{"steamid":76561197997072430}}'
-        }
+      steam.getUserIdFromUsername('atlas32')
+      .then( steamId => {
+        assert.equal( steamId, '76561198185570222' );
+
+        done();
+      })
+      .catch( err => {
+        assert.ok( false );
+        done( err );
       });
 
-      assert.deepEqual(
-        steam.getUserIdFromUsername('atlas32'),
-        { body : '{"response":{"steamid":76561197997072430}}' }
-      );
     });
   });
 });
