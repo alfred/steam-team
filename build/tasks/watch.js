@@ -1,6 +1,6 @@
 const jsPath = 'www/js/**/*.js';
 const scssPath = 'www/scss/**/*.scss';
-const templatesPath = 'src/+(pages|templates)/**/*.njs';
+const templatesPath = 'www/+(pages|templates)/**/*.njs';
 
 module.exports = gulp => {
   gulp.task( 'watch', () => {
