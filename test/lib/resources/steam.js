@@ -100,7 +100,11 @@ describe( 'lib/resources/steam', () => {
     it( 'returns a userId given a username', done => {
       let steam = require('rewire')( modulePath );
       let mockResponse = {
-        "body" : '{ "response": { "steamid": "76561198185570222" } }'
+        body : {
+          response: {
+            steamid: "76561198185570222"
+          }
+        }
       }
       steam.__set__( 'steamGET', () => Promise.resolve( mockResponse ) );
 
