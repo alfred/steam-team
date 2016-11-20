@@ -124,7 +124,7 @@ describe( 'lib/resources/steam', () => {
 
     it( 'returns a Promise', () => {
       let steam = require('rewire')( modulePath );
-      assert.instanceOf( steam.getUserIdFromVanityURL('atlas32'), Promise );
+      assert.instanceOf( steam.getUserIdFromVanityURL('http://steamcommunity.com/id/AtlasTehLeet/'), Promise );
     });
 
     it( 'calls steamGET with a fully formed URL given a username', done => {
@@ -132,25 +132,25 @@ describe( 'lib/resources/steam', () => {
 
       steam.__set__( 'steamGET', ( url, options ) => {
         assert.equal( url, 'https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/' );
-        assert.equal( options.vanityurl, 'atlas32' );
+        assert.equal( options.vanityurl, 'AtlasTehLeet' );
         done();
       });
 
-      steam.getUserIdFromVanityURL('atlas32');
+      steam.getUserIdFromVanityURL('http://steamcommunity.com/id/AtlasTehLeet/');
     });
 
     it( 'returns a userId given a username', done => {
       let steam = require('rewire')( modulePath );
       let mockResponse = {
         'response': {
-          'steamid': '76561198185570222'
+          'steamid': '76561197997072425'
         }
       }
       steam.__set__( 'steamGET', () => Promise.resolve( mockResponse ) );
 
-      steam.getUserIdFromVanityURL('atlas32')
+      steam.getUserIdFromVanityURL('http://steamcommunity.com/id/AtlasTehLeet/')
       .then( steamId => {
-        assert.equal( steamId, '76561198185570222' );
+        assert.equal( steamId, '76561197997072425' );
 
         done();
       })
@@ -255,7 +255,7 @@ describe( 'lib/resources/steam', () => {
     });
   });
 
-  describe( '#getMostPopularGameFromUsernames', () => {
+  xdescribe( '#getMostPopularGameFromUsernames', () => {
 
     it( 'is a function', () => {
       let steam = require('rewire')( modulePath );
@@ -271,13 +271,13 @@ describe( 'lib/resources/steam', () => {
 
     it( 'returns the most popular game given a username', done => {
       let steam = require('rewire')( modulePath );
-      const mockId = "76561198185570222";
+      const mockId = "76561197997072425";
       const mockStats = [
         {
           "appid": 240,
           "name": "Counter-Strike: Source",
           "playtime_forever": 68967,
-          "steamid": "76561198185570222"
+          "steamid": "76561197997072425"
         }
       ];
 
@@ -285,7 +285,7 @@ describe( 'lib/resources/steam', () => {
         "appid": 240,
         "name": "Counter-Strike: Source",
         "playtime_forever": 68967,
-        "players" : [ { username: 'atlas32', steamid: '76561198185570222' } ]
+        "players" : [ { username: 'atlas32', steamid: '76561197997072425' } ]
       };
 
       steam.__set__( 'getUserIdFromVanityURL', () => Promise.resolve( mockId ) );
