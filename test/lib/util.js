@@ -95,4 +95,46 @@ describe( 'lib/util', () => {
       assert.equal( util.indexOfGame( [], 240 ), -1 );
     });
   });
+
+  describe( '#findMostPopularGame', () => {
+
+    it( 'is a function', () => {
+      let util = require('rewire')( modulePath );
+
+      assert.isFunction( util.findMostPopularGame );
+    });
+
+    it( 'outputs the game object with the highest playtime_forever', () => {
+      let util = require('rewire')( modulePath );
+      let mergedPlaytimes = [
+        {
+          "appid": 240,
+          "name": "Counter-Strike: Source",
+          "playtime_forever": 137934,
+          "players" : [ '0', '1' ]
+        },
+        {
+          "appid": 300,
+          "name": "Day of Defeat: Source",
+          "playtime_forever": 116,
+          "players" : [ '0', '1' ]
+        }
+      ];
+
+      let mostPopular = {
+        "appid": 240,
+        "name": "Counter-Strike: Source",
+        "playtime_forever": 137934,
+        "players" : [ '0', '1' ]
+      };
+
+      assert.deepEqual( util.findMostPopularGame( mergedPlaytimes ), mostPopular );
+    });
+
+    it( 'outputs an empty obj if no highest is found', () => {
+      let util = require('rewire')( modulePath );
+      assert.deepEqual( util.findMostPopularGame( [] ), {} );
+    });
+
+  });
 });
