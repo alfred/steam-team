@@ -131,6 +131,33 @@ describe( 'lib/util', () => {
       assert.deepEqual( util.findMostPopularGame( mergedPlaytimes ), mostPopular );
     });
 
+    it( 'outputs the game with the highest playtime_forever lmao', () => {
+      let util = require('rewire')( modulePath );
+      let mergedPlaytimes = [
+        {
+          "appid": 300,
+          "name": "Day of Defeat: Source",
+          "playtime_forever": 116,
+          "players" : [ '0', '1' ]
+        },
+        {
+          "appid": 240,
+          "name": "Counter-Strike: Source",
+          "playtime_forever": 137934,
+          "players" : [ '0', '1' ]
+        }
+      ];
+
+      let mostPopular = {
+        "appid": 240,
+        "name": "Counter-Strike: Source",
+        "playtime_forever": 137934,
+        "players" : [ '0', '1' ]
+      };
+
+      assert.deepEqual( util.findMostPopularGame( mergedPlaytimes ), mostPopular );
+    });
+
     it( 'outputs an empty obj if no highest is found', () => {
       let util = require('rewire')( modulePath );
       assert.deepEqual( util.findMostPopularGame( [] ), {} );
