@@ -21,6 +21,17 @@ describe( 'lib/resources/steam', () => {
       assert.isFunction( steamGET );
     });
 
+    it( 'returns a Promise', () => {
+      let steam = require('rewire')( modulePath );
+      let steamGET = steam.__get__('steamGET');
+
+      steam.__set__( 'request', {
+        get() {}
+      });
+
+      assert.instanceOf( steamGET( 'https://alfredabab.io' ), Promise );
+    });
+
     it( 'adds the URL and API key to opts', done => {
       let steam = require('rewire')( modulePath );
       let myUrl = 'https://alfredabab.io';
@@ -29,6 +40,7 @@ describe( 'lib/resources/steam', () => {
         get( opts ) {
           assert.equal( opts.url, myUrl );
           assert.isDefined( opts.qs.key );
+          assert.equal( opts.qs.format, 'json' );
           done();
         }
       });
@@ -58,21 +70,28 @@ describe( 'lib/resources/steam', () => {
     it( 'resolves with a response', done => {
       let steam = require('rewire')( modulePath );
 
+      let mockResponse = {
+        "response": {
+          "steamid": "76561197997072425",
+          "success": 1
+        }
+      }
+
       steam.__set__( 'request', {
         get( opts, cb ) {
-          cb( null, 'Response' );
+          cb( null, { body: '{\n\t"response": {\n\t\t"steamid": "76561197997072425",\n\t\t"success": 1\n\t}\n}' } );
         }
       });
 
       let steamGET = steam.__get__('steamGET');
-      steamGET('https://alfredabab.io')
+      steamGET('http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=B2FEE83E31F378B820F5809EC14B1850&vanityurl=AtlasTehLeet&format=json')
       .then( res => {
-        assert.equal( res, 'Response' );
+        assert.deepEqual( res, mockResponse );
         done();
       })
       .catch( err => {
         assert.ok( false );
-        done();
+        done( err );
       });
     });
   });
@@ -83,6 +102,11 @@ describe( 'lib/resources/steam', () => {
       let steam = require('rewire')( modulePath );
 
       assert.isFunction( steam.getUserIdFromUsername );
+    });
+
+    it( 'returns a Promise', () => {
+      let steam = require('rewire')( modulePath );
+      assert.instanceOf( steam.getUserIdFromUsername('atlas32'), Promise );
     });
 
     it( 'calls steamGET with a fully formed URL given a username', done => {
@@ -100,10 +124,8 @@ describe( 'lib/resources/steam', () => {
     it( 'returns a userId given a username', done => {
       let steam = require('rewire')( modulePath );
       let mockResponse = {
-        body : {
-          response: {
-            steamid: "76561198185570222"
-          }
+        'response': {
+          'steamid': '76561198185570222'
         }
       }
       steam.__set__( 'steamGET', () => Promise.resolve( mockResponse ) );
@@ -115,6 +137,7 @@ describe( 'lib/resources/steam', () => {
         done();
       })
       .catch( err => {
+        console.log( err );
         assert.ok( false );
         done( err );
       });
@@ -190,6 +213,10 @@ describe( 'lib/resources/steam', () => {
 
         done();
       })
+      .catch( err => {
+        assert.ok( false );
+        done( err );
+      })
     });
 
     it( 'throws if theres an error with steamGet', done => {
@@ -199,6 +226,67 @@ describe( 'lib/resources/steam', () => {
       });
 
       steam.getOwnedGamesByUserId('76561197997072425')
+      .then( res => {
+        assert.ok( false );
+        done( res );
+      })
+      .catch( err => {
+        assert.ok( true );
+        done();
+      });
+    });
+  });
+
+  describe( '#getMostPopularGameFromUsernames', () => {
+
+    it( 'is a function', () => {
+      let steam = require('rewire')( modulePath );
+
+      assert.isFunction( steam.getMostPopularGameFromUsernames );
+    });
+
+    it( 'returns a Promise', () => {
+      let steam = require('rewire')( modulePath );
+
+      assert.instanceOf( steam.getMostPopularGameFromUsernames( ['atlas32'] ), Promise );
+    });
+
+    it( 'returns the most popular game given a username', done => {
+      let steam = require('rewire')( modulePath );
+      const mockId = "76561198185570222";
+      const mockStats = [
+        {
+          "appid": 240,
+          "name": "Counter-Strike: Source",
+          "playtime_forever": 68967,
+          "steamid": "76561198185570222"
+        }
+      ];
+
+      let mockPopular = {
+        "appid": 240,
+        "name": "Counter-Strike: Source",
+        "playtime_forever": 68967,
+        "players" : [ { username: 'atlas32', steamid: '76561198185570222' } ]
+      };
+
+      // steam.__set__( 'getUserIdFromUsername', () => Promise.resolve( mockId ) );
+      // steam.__set__( 'getOwnedGamesByUserId', () => Promise.resolve( mockStats ) );
+      steam.getMostPopularGameFromUsernames( [ 'atlas32' ] )
+      .then( pop => {
+        // assert.deepEqual( pop, mockPopular );
+        done();
+      })
+
+    });
+
+    it( 'throws an error if steam fucks up', done => {
+      let steam = require('rewire')( modulePath );
+      steam.__set__( 'steamGET', () => {
+        return Promise.reject( new Error() );
+      });
+
+      steam.getMostPopularGameFromUsernames( [ 'atlas32' ] )
       .then( res => {
         assert.ok( false );
         done( res );
