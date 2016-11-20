@@ -26,25 +26,29 @@ describe( 'lib/util', () => {
            "appid": 240,
            "name": "Counter-Strike: Source",
            "playtime_forever": 68967,
-           "steamid": "0"
+           "steamid": "0",
+           "username": "zero"
          },
          {
            "appid": 300,
            "name": "Day of Defeat: Source",
            "playtime_forever": 58,
-           "steamid": "0"
+           "steamid": "0",
+           "username": "zero"
          }],
          [{
             "appid": 240,
             "name": "Counter-Strike: Source",
             "playtime_forever": 68967,
-            "steamid": "1"
+            "steamid": "1",
+            "username": "one"
           },
           {
             "appid": 300,
             "name": "Day of Defeat: Source",
             "playtime_forever": 58,
-            "steamid": "1"
+            "steamid": "1",
+            "username": "one"
           }]
       ];
 
@@ -53,13 +57,19 @@ describe( 'lib/util', () => {
           "appid": 240,
           "name": "Counter-Strike: Source",
           "playtime_forever": 137934,
-          "players" : [ '0', '1' ]
+          "players" : [
+            { "username": "zero", "steamid" : "0" },
+            { "username": "one", "steamid" : "1" }
+          ]
         },
         {
           "appid": 300,
           "name": "Day of Defeat: Source",
           "playtime_forever": 116,
-          "players" : [ '0', '1' ]
+          "players" : [
+            { "username": "zero", "steamid" : "0" },
+            { "username": "one", "steamid" : "1" }
+          ]
         }
       ];
 
