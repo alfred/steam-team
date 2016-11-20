@@ -135,7 +135,78 @@ describe( 'lib/resources/steam', () => {
       .catch( err => {
         assert.ok( true );
         done();
+      });
+    });
+  });
+
+  describe( '#getOwnedGamesByUserId', () => {
+
+    it( 'is a function', () => {
+      let steam = require('rewire')( modulePath );
+
+      assert.isFunction( steam.getOwnedGamesByUserId );
+    });
+
+    it( 'calls steamGET with a fuly formed URL given userid', done => {
+      let steam = require('rewire')( modulePath );
+
+      steam.__set__( 'steamGET', ( url, options ) => {
+        assert.equal( url, 'https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/' );
+        assert.equal( options.steamid, '76561197997072425' );
+        assert.equal( options.include_appinfo, 1 );
+        assert.equal( options.include_played_free_games, 1 );
+        done();
+      });
+
+      steam.getOwnedGamesByUserId('76561197997072425');
+    });
+
+    it( 'returns an array of games that the user owns with playtime', done => {
+      let steam = require('rewire')( modulePath );
+      const userId = '76561197997072425';
+      let mockResponse = {
+        response: {
+          games: [
+            {
+              "appid": 240,
+              "name": "Counter-Strike: Source",
+              "playtime_forever": 68967,
+              "img_icon_url": "9052fa60c496a1c03383b27687ec50f4bf0f0e10",
+              "img_logo_url": "ee97d0dbf3e5d5d59e69dc20b98ed9dc8cad5283",
+              "has_community_visible_stats": true
+            }
+          ]
+        }
+      };
+      let mockGames = mockResponse.response.games;
+      // Might be the laziest line ever written
+      mockGames.forEach( g => g.steamid = userId );
+
+      steam.__set__( 'steamGET', () => Promise.resolve( mockResponse ) );
+
+      steam.getOwnedGamesByUserId( userId )
+      .then( games => {
+        assert.deepEqual( games, mockGames );
+
+        done();
       })
+    });
+
+    it( 'throws if theres an error with steamGet', done => {
+      let steam = require('rewire')( modulePath );
+      steam.__set__( 'steamGET', () => {
+        return Promise.reject( new Error() );
+      });
+
+      steam.getOwnedGamesByUserId('76561197997072425')
+      .then( res => {
+        assert.ok( false );
+        done( res );
+      })
+      .catch( err => {
+        assert.ok( true );
+        done();
+      });
     });
   });
 });
