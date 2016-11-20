@@ -96,17 +96,35 @@ describe( 'lib/resources/steam', () => {
     });
   });
 
-  describe( '#getUserIdFromUsername', () => {
+  describe( '#getVanityFromURL', () => {
+    it( 'is a function', () => {
+      let steam = require('rewire')( modulePath );
+      let getVanityFromURL = steam.__get__('getVanityFromURL');
+    });
+
+    it( 'works with http', () => {
+      let steam = require('rewire')( modulePath );
+      let getVanityFromURL = steam.__get__('getVanityFromURL');
+    });
+
+    it( 'works with https', () => {
+      let steam = require('rewire')( modulePath );
+      let getVanityFromURL = steam.__get__('getVanityFromURL');
+    });
+
+  });
+
+  describe( '#getUserIdFromVanityURL', () => {
 
     it( 'is a function', () => {
       let steam = require('rewire')( modulePath );
 
-      assert.isFunction( steam.getUserIdFromUsername );
+      assert.isFunction( steam.getUserIdFromVanityURL );
     });
 
     it( 'returns a Promise', () => {
       let steam = require('rewire')( modulePath );
-      assert.instanceOf( steam.getUserIdFromUsername('atlas32'), Promise );
+      assert.instanceOf( steam.getUserIdFromVanityURL('atlas32'), Promise );
     });
 
     it( 'calls steamGET with a fully formed URL given a username', done => {
@@ -118,7 +136,7 @@ describe( 'lib/resources/steam', () => {
         done();
       });
 
-      steam.getUserIdFromUsername('atlas32');
+      steam.getUserIdFromVanityURL('atlas32');
     });
 
     it( 'returns a userId given a username', done => {
@@ -130,7 +148,7 @@ describe( 'lib/resources/steam', () => {
       }
       steam.__set__( 'steamGET', () => Promise.resolve( mockResponse ) );
 
-      steam.getUserIdFromUsername('atlas32')
+      steam.getUserIdFromVanityURL('atlas32')
       .then( steamId => {
         assert.equal( steamId, '76561198185570222' );
 
@@ -150,7 +168,7 @@ describe( 'lib/resources/steam', () => {
         return Promise.reject( new Error() );
       });
 
-      steam.getUserIdFromUsername()
+      steam.getUserIdFromVanityURL()
       .then( res => {
         assert.ok( false );
         done( res );
@@ -162,7 +180,7 @@ describe( 'lib/resources/steam', () => {
     });
   });
 
-  describe( '#getOwnedGamesByUserId', () => {
+  xdescribe( '#getOwnedGamesByUserId', () => {
 
     it( 'is a function', () => {
       let steam = require('rewire')( modulePath );
@@ -270,11 +288,11 @@ describe( 'lib/resources/steam', () => {
         "players" : [ { username: 'atlas32', steamid: '76561198185570222' } ]
       };
 
-      // steam.__set__( 'getUserIdFromUsername', () => Promise.resolve( mockId ) );
-      // steam.__set__( 'getOwnedGamesByUserId', () => Promise.resolve( mockStats ) );
+      steam.__set__( 'getUserIdFromVanityURL', () => Promise.resolve( mockId ) );
+      steam.__set__( 'getOwnedGamesByUserId', () => Promise.resolve( mockStats ) );
       steam.getMostPopularGameFromUsernames( [ 'atlas32' ] )
       .then( pop => {
-        // assert.deepEqual( pop, mockPopular );
+        assert.deepEqual( pop, mockPopular );
         done();
       })
 
