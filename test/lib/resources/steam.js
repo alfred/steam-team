@@ -84,6 +84,7 @@ describe( 'lib/resources/steam', () => {
       });
 
       let steamGET = steam.__get__('steamGET');
+
       steamGET('http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=B2FEE83E31F378B820F5809EC14B1850&vanityurl=AtlasTehLeet&format=json')
       .then( res => {
         assert.deepEqual( res, mockResponse );
@@ -100,31 +101,55 @@ describe( 'lib/resources/steam', () => {
     it( 'is a function', () => {
       let steam = require('rewire')( modulePath );
       let getVanityFromURL = steam.__get__('getVanityFromURL');
+
+      assert.isFunction( getVanityFromURL );
     });
 
-    it( 'works with http', () => {
+    it( 'returns if link isnt prefixed', () => {
       let steam = require('rewire')( modulePath );
       let getVanityFromURL = steam.__get__('getVanityFromURL');
+      let vanityURL = 'http://www.steamcommunity.com/id/AtlasTehLeet/';
+
+      assert.equal( getVanityFromURL( vanityURL ), 'AtlasTehLeet' );
     });
 
-    it( 'works with https', () => {
+    it( 'returns if link is http', () => {
       let steam = require('rewire')( modulePath );
       let getVanityFromURL = steam.__get__('getVanityFromURL');
+      let vanityURL = 'https://steamcommunity.com/id/AtlasTehLeet/';
+
+      assert.equal( getVanityFromURL( vanityURL ), 'AtlasTehLeet' );
+    });
+
+    it( 'returns if link has www', () => {
+      let steam = require('rewire')( modulePath );
+      let getVanityFromURL = steam.__get__('getVanityFromURL');
+      let vanityURL = 'www.steamcommunity.com/id/AtlasTehLeet/';
+
+      assert.equal( getVanityFromURL( vanityURL ), 'AtlasTehLeet' );
+    });
+
+    it( 'returns if link has no prefix', () => {
+      let steam = require('rewire')( modulePath );
+      let getVanityFromURL = steam.__get__('getVanityFromURL');
+      let vanityURL = 'steamcommunity.com/id/AtlasTehLeet/';
+
+      assert.equal( getVanityFromURL( vanityURL ), 'AtlasTehLeet' );
     });
 
   });
 
-  describe( '#getUserIdFromVanityURL', () => {
+  describe( '#getUserIdFromVanityID', () => {
 
     it( 'is a function', () => {
       let steam = require('rewire')( modulePath );
 
-      assert.isFunction( steam.getUserIdFromVanityURL );
+      assert.isFunction( steam.getUserIdFromVanityID );
     });
 
     it( 'returns a Promise', () => {
       let steam = require('rewire')( modulePath );
-      assert.instanceOf( steam.getUserIdFromVanityURL('http://steamcommunity.com/id/AtlasTehLeet/'), Promise );
+      assert.instanceOf( steam.getUserIdFromVanityID('AtlasTehLeet'), Promise );
     });
 
     it( 'calls steamGET with a fully formed URL given a username', done => {
@@ -136,7 +161,7 @@ describe( 'lib/resources/steam', () => {
         done();
       });
 
-      steam.getUserIdFromVanityURL('http://steamcommunity.com/id/AtlasTehLeet/');
+      steam.getUserIdFromVanityID('AtlasTehLeet');
     });
 
     it( 'returns a userId given a username', done => {
@@ -148,7 +173,7 @@ describe( 'lib/resources/steam', () => {
       }
       steam.__set__( 'steamGET', () => Promise.resolve( mockResponse ) );
 
-      steam.getUserIdFromVanityURL('http://steamcommunity.com/id/AtlasTehLeet/')
+      steam.getUserIdFromVanityID('AtlasTehLeet')
       .then( steamId => {
         assert.equal( steamId, '76561197997072425' );
 
@@ -168,7 +193,7 @@ describe( 'lib/resources/steam', () => {
         return Promise.reject( new Error() );
       });
 
-      steam.getUserIdFromVanityURL()
+      steam.getUserIdFromVanityID('AtlasTehLeet')
       .then( res => {
         assert.ok( false );
         done( res );
@@ -180,7 +205,7 @@ describe( 'lib/resources/steam', () => {
     });
   });
 
-  xdescribe( '#getOwnedGamesByUserId', () => {
+  describe( '#getOwnedGamesByUserId', () => {
 
     it( 'is a function', () => {
       let steam = require('rewire')( modulePath );
@@ -255,7 +280,7 @@ describe( 'lib/resources/steam', () => {
     });
   });
 
-  xdescribe( '#getMostPopularGameFromUsernames', () => {
+  describe( '#getMostPopularGameFromUsernames', () => {
 
     it( 'is a function', () => {
       let steam = require('rewire')( modulePath );
@@ -265,8 +290,9 @@ describe( 'lib/resources/steam', () => {
 
     it( 'returns a Promise', () => {
       let steam = require('rewire')( modulePath );
+      let communityURL = 'http://steamcommunity.com/id/AtlasTehLeet/';
 
-      assert.instanceOf( steam.getMostPopularGameFromUsernames( ['atlas32'] ), Promise );
+      assert.instanceOf( steam.getMostPopularGameFromUsernames( [ communityURL ] ), Promise );
     });
 
     it( 'returns the most popular game given a username', done => {
@@ -274,26 +300,31 @@ describe( 'lib/resources/steam', () => {
       const mockId = "76561197997072425";
       const mockStats = [
         {
-          "appid": 240,
-          "name": "Counter-Strike: Source",
-          "playtime_forever": 68967,
+          "appid": 4000,
+          "name": "Garry\'s Mod",
+          "playtime_forever": 79781,
           "steamid": "76561197997072425"
         }
       ];
 
       let mockPopular = {
-        "appid": 240,
-        "name": "Counter-Strike: Source",
-        "playtime_forever": 68967,
-        "players" : [ { username: 'atlas32', steamid: '76561197997072425' } ]
+        "appid": 4000,
+        "name": "Garry\'s Mod",
+        "playtime_forever": 79781,
+        "players" : [ { vanityId: 'AtlasTehLeet', steamid: '76561197997072425' } ]
       };
+      let communityURL = 'http://steamcommunity.com/id/AtlasTehLeet/';
 
-      steam.__set__( 'getUserIdFromVanityURL', () => Promise.resolve( mockId ) );
+      steam.__set__( 'getUserIdFromVanityID', () => Promise.resolve( mockId ) );
       steam.__set__( 'getOwnedGamesByUserId', () => Promise.resolve( mockStats ) );
-      steam.getMostPopularGameFromUsernames( [ 'atlas32' ] )
+      steam.getMostPopularGameFromUsernames( [ communityURL ] )
       .then( pop => {
         assert.deepEqual( pop, mockPopular );
         done();
+      })
+      .catch( err => {
+        assert.ok( false );
+        done( err );
       })
 
     });
@@ -303,8 +334,9 @@ describe( 'lib/resources/steam', () => {
       steam.__set__( 'steamGET', () => {
         return Promise.reject( new Error() );
       });
+      let communityURL = 'http://steamcommunity.com/id/AtlasTehLeet/';
 
-      steam.getMostPopularGameFromUsernames( [ 'atlas32' ] )
+      steam.getMostPopularGameFromUsernames( [ communityURL ] )
       .then( res => {
         assert.ok( false );
         done( res );
