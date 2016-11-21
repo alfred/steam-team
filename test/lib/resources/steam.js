@@ -295,7 +295,7 @@ describe( 'lib/resources/steam', () => {
       assert.instanceOf( steam.getMostPopularGameFromVanityURLs( [ communityURL ] ), Promise );
     });
 
-    it( 'returns the most popular game given a username', done => {
+    it( 'returns the most popular game given a vanity url', done => {
       let steam = require('rewire')( modulePath );
       const mockId = "76561197997072425";
       const mockStats = [
@@ -317,7 +317,41 @@ describe( 'lib/resources/steam', () => {
 
       steam.__set__( 'getUserIdFromVanityID', () => Promise.resolve( mockId ) );
       steam.__set__( 'getOwnedGamesByUserId', () => Promise.resolve( mockStats ) );
-      steam.getMostPopularGameFromVanityURLs( [ communityURL ] )
+      steam.getMostPopularGameFromVanityURLs( [ communityURL ], 'playtime' )
+      .then( pop => {
+        assert.deepEqual( pop, mockPopular );
+        done();
+      })
+      .catch( err => {
+        assert.ok( false );
+        done( err );
+      })
+
+    });
+
+    it( 'returns the most popular game given a vanity url', done => {
+      let steam = require('rewire')( modulePath );
+      const mockId = "76561197997072425";
+      const mockStats = [
+        {
+          "appid": 4000,
+          "name": "Garry\'s Mod",
+          "playtime_forever": 79781,
+          "steamid": "76561197997072425"
+        }
+      ];
+
+      let mockPopular = {
+        "appid": 4000,
+        "name": "Garry\'s Mod",
+        "playtime_forever": 79781,
+        "players" : [ { vanityId: 'AtlasTehLeet', steamid: '76561197997072425' } ]
+      };
+      let communityURL = 'http://steamcommunity.com/id/AtlasTehLeet/';
+
+      steam.__set__( 'getUserIdFromVanityID', () => Promise.resolve( mockId ) );
+      steam.__set__( 'getOwnedGamesByUserId', () => Promise.resolve( mockStats ) );
+      steam.getMostPopularGameFromVanityURLs( [ communityURL ], 'ownership' )
       .then( pop => {
         assert.deepEqual( pop, mockPopular );
         done();
