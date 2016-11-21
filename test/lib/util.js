@@ -106,12 +106,12 @@ describe( 'lib/util', () => {
     });
   });
 
-  describe( '#findMostPopularGame', () => {
+  describe( '#findMostPopularGameByPlaytime', () => {
 
     it( 'is a function', () => {
       let util = require('rewire')( modulePath );
 
-      assert.isFunction( util.findMostPopularGame );
+      assert.isFunction( util.findMostPopularGameByPlaytime );
     });
 
     it( 'outputs the game object with the highest playtime_forever', () => {
@@ -138,7 +138,7 @@ describe( 'lib/util', () => {
         "players" : [ '0', '1' ]
       };
 
-      assert.deepEqual( util.findMostPopularGame( mergedPlaytimes ), mostPopular );
+      assert.deepEqual( util.findMostPopularGameByPlaytime( mergedPlaytimes ), mostPopular );
     });
 
     it( 'outputs the game with the highest playtime_forever lmao', () => {
@@ -165,12 +165,12 @@ describe( 'lib/util', () => {
         "players" : [ '0', '1' ]
       };
 
-      assert.deepEqual( util.findMostPopularGame( mergedPlaytimes ), mostPopular );
+      assert.deepEqual( util.findMostPopularGameByPlaytime( mergedPlaytimes ), mostPopular );
     });
 
     it( 'outputs an empty obj if no highest is found', () => {
       let util = require('rewire')( modulePath );
-      assert.deepEqual( util.findMostPopularGame( [] ), {} );
+      assert.deepEqual( util.findMostPopularGameByPlaytime( [] ), {} );
     });
 
   });
