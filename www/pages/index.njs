@@ -2,5 +2,13 @@
 {% extends "layout.njs" %}
 
 {% block content %}
-  <h1>Index Page</h1>
+<div class="container">
+  <div class="jumbotron">
+    <h1>Hello, world!</h1>
+    <p>...</p>
+    <p>
+      <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+    </p>
+  </div>
+</div>
 {% endblock %}
