@@ -174,4 +174,73 @@ describe( 'lib/util', () => {
     });
 
   });
+
+  describe( '#findMostPopularGameByOwnership', () => {
+
+    it( 'is a function', () => {
+      let util = require('rewire')( modulePath );
+
+      assert.isFunction( util.findMostPopularGameByOwnership );
+    });
+
+    it( 'outputs the game object with the highest playtime_forever', () => {
+      let util = require('rewire')( modulePath );
+      let mergedPlaytimes = [
+        {
+          "appid": 240,
+          "name": "Counter-Strike: Source",
+          "playtime_forever": 137934,
+          "players" : [ '1' ]
+        },
+        {
+          "appid": 300,
+          "name": "Day of Defeat: Source",
+          "playtime_forever": 116,
+          "players" : [ '0', '1' ]
+        }
+      ];
+
+      let mostPopular = {
+        "appid": 300,
+        "name": "Day of Defeat: Source",
+        "playtime_forever": 116,
+        "players" : [ '0', '1' ]
+      };
+
+      assert.deepEqual( util.findMostPopularGameByOwnership( mergedPlaytimes ), mostPopular );
+    });
+
+    it( 'outputs the game with the highest playtime_forever lmao', () => {
+      let util = require('rewire')( modulePath );
+      let mergedPlaytimes = [
+        {
+          "appid": 300,
+          "name": "Day of Defeat: Source",
+          "playtime_forever": 116,
+          "players" : [ '0', '1' ]
+        },
+        {
+          "appid": 240,
+          "name": "Counter-Strike: Source",
+          "playtime_forever": 137934,
+          "players" : [ '0', '1' ]
+        }
+      ];
+
+      let mostPopular = {
+        "appid": 300,
+        "name": "Day of Defeat: Source",
+        "playtime_forever": 116,
+        "players" : [ '0', '1' ]
+      };
+
+      assert.deepEqual( util.findMostPopularGameByOwnership( mergedPlaytimes ), mostPopular );
+    });
+
+    it( 'outputs an empty obj if no highest is found', () => {
+      let util = require('rewire')( modulePath );
+      assert.deepEqual( util.findMostPopularGameByOwnership( [] ), {} );
+    });
+
+  });
 });
