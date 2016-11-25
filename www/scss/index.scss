@@ -1,4 +1,4 @@
-.action-btn {
+.action__btn {
   font-size: 60px;
   padding: 45px;
 
@@ -6,4 +6,8 @@
     cursor: pointer;
     background-color: #EFEFEF;
   }
+}
+
+.action__prompt {
+  margin-bottom: 12.5%;
 }
