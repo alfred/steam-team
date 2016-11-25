@@ -2,13 +2,52 @@
 {% extends "layout.njs" %}
 
 {% block content %}
-<div class="container">
   <div class="jumbotron">
-    <h1>Hello, world!</h1>
-    <p>...</p>
-    <p>
-      <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-    </p>
+    <div class="container">
+      <div class="row">
+        <div class="page-header">
+          <h1>Steam Team</h1>
+        </div>
+
+      </div>
+    </div>
   </div>
-</div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h3 class="text-center">What would you like to do?</h3>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-md-3 col-xs-6">
+        <div class="panel panel-default">
+          <div class="panel-body text-center action-btn">
+            <span class="glyphicon glyphicon-time"></span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-xs-6">
+        <div class="panel panel-default">
+          <div class="panel-body text-center action-btn">
+            <span class="glyphicon glyphicon-user"></span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-xs-6">
+        <div class="panel panel-default">
+          <div class="panel-body text-center action-btn">
+            <span class="glyphicon glyphicon-trash"></span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-xs-6">
+        <div class="panel panel-default">
+          <div class="panel-body text-center action-btn">
+            <span class="glyphicon glyphicon-th-list"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
