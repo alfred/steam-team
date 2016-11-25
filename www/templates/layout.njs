@@ -11,7 +11,16 @@
 <body>
 
   {# {% include "partials/nav.njs" %} #}
+  <div class="jumbotron">
+    <div class="container">
+      <div class="row">
+        <div class="page-header">
+          <h1>Steam Team</h1>
+        </div>
 
+      </div>
+    </div>
+  </div>
   {% block content %}
     <!-- Content will go here -->
   {% endblock %}
