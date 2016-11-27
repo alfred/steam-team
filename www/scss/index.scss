@@ -2,6 +2,10 @@
   font-size: 60px;
   padding: 45px;
 
+  &.active {
+    background-color: #CDCDCD;
+  }
+
   &:hover {
     cursor: pointer;
     background-color: #EFEFEF;
@@ -9,5 +13,5 @@
 }
 
 .action__prompt {
-  margin-bottom: 10%;
+  margin-bottom: 5%;
 }

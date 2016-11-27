@@ -11,7 +11,7 @@
 <body>
 
   {# {% include "partials/nav.njs" %} #}
-  <div class="jumbotron">
+  <div class="">
     <div class="container">
       <div class="row">
         <div class="page-header">
