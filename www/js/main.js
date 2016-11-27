@@ -2,7 +2,7 @@
   $( function() {
 
     bindActionButtons();
-
+    bindFormSubmitButtons();
 
   });
 }(jQuery));
@@ -26,7 +26,7 @@ function resetAllActionBtn() {
     function( elem ) {
       $( elem ).removeClass('active');
     });
-}
+};
 
 function showFormTextArea() {
   var $actionBtns = $('.action__btn');
@@ -43,4 +43,27 @@ function showFormTextArea() {
   } else {
     $('.action__form').removeClass('hidden');
   }
+};
+
+function bindFormSubmitButtons() {
+  $('.bust-cache').on( 'click', function( e ) {
+    e.preventDefault();
+
+    var rawInput = $('.form__textinput').val();
+    var inputVanityURLs = rawInput.split('/n');
+
+    $.ajax({
+      method: 'POST',
+      url : '/steam/popular/playtime',
+      contentType: 'application/json',
+      data: JSON.stringify({ vanityURLs: inputVanityURLs }),
+      success: function( response ) {
+        // Do something with data
+        console.log( response );
+      },
+      error: function( err ) {
+        console.log( err );
+      }
+    });
+  });
 }

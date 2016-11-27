@@ -55,13 +55,16 @@
       <div class="col-md-12">
         <form class="" role="">
           <div class="form-group">
-            <textarea type="text" rows="10" class="form-control" placeholder=""></textarea>
+            <textarea type="text" rows="10" class="form-control form__textinput" placeholder=""></textarea>
           </div>
-          <div class="col-md-6">
-            <button type="submit" class="btn btn-info col-md-12">Refresh</button>
+          <div class="col-md-4">
+            <button type="button" class="btn btn-info col-md-12 bust-cache">Refresh</button>
           </div>
-          <div class="col-md-6">
-            <button type="submit" class="btn btn-primary col-md-12">Submit</button>
+          <div class="col-md-4">
+            <button type="button" class="btn btn-success col-md-12 use-friends">Use My Friends</button>
+          </div>
+          <div class="col-md-4">
+            <button type="button" class="btn btn-primary col-md-12 use-cache">Submit</button>
           </div>
         </form>
       </div>
