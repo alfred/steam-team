@@ -1,29 +1,31 @@
+drop database if exists steamTeam;
+create schema steamTeam;
 Use steamTeam;
 
-DROP table if exists userTable;
-
-CREATE TABLE userTable (
-  `userId` int NOT NULL,
-  `userName` text NOT NULL,
-  `dateJoined` date,
-  PRIMARY KEY (`userId`),
-  UNIQUE KEY `userId_unq` (`userId`)
-);
-
-DROP table if exists libraryTable;
-CREATE TABLE libraryTable (
-  `userId` int NOT NULL REFERENCES userTable.userId,
-  `gameId` int NOT NULL REFERENCES gameTable.gameId,
-  `hoursPlayed` int NOT NULL,
-  PRIMARY KEY (`userId`, `gameId`)
+DROP table if exists user_table;
+CREATE TABLE user_table (
+  `userId` INT NOT NULL,
+  `userName` TEXT NOT NULL,
+  `dateJoined` DATE,
+  PRIMARY KEY (`userId`)
 );
  
-DROP table if exists gameTable;
-CREATE TABLE gameTable (
+DROP table if exists game_table;
+CREATE TABLE game_table (
     `gameId` INT NOT NULL,
     `title` TEXT NOT NULL,
-    `dateReleased` DATETIME NOT NULL,
+    `dateReleased` DATE NOT NULL,
     PRIMARY KEY (`gameId`)
+);
+
+DROP table if exists users_owned_games;
+CREATE TABLE users_owned_games (
+  `userId` INT NOT NULL,
+  `gameId` INT NOT NULL,
+  `hoursPlayed` INT NOT NULL,
+  PRIMARY KEY (`userId`, `gameId`),
+  foreign key (`userId`) REFERENCES user_table(`userId`) ON UPDATE CASCADE ON DELETE CASCADE,
+  foreign key (`gameId`) REFERENCES game_table(`gameId`) ON UPDATE CASCADE ON DELETE CASCADE
 );
   
 DROP table if exists achievement;
@@ -34,15 +36,10 @@ CREATE TABLE achievement (
     PRIMARY KEY (`achievementId`)
 );
 
-DROP table if exists achievementsByUser;
-
-CREATE TABLE achievementsByUser (
+DROP table if exists achievements_by_user;
+CREATE TABLE achievements_by_user (
     `userId` INT NOT NULL,
     `achievementId` INT NOT NULL,
-    FOREIGN KEY (`userId`)
-        REFERENCES userTable (`userId`)
-        ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT `userToAchievement` FOREIGN KEY (`achievementId`)
-        REFERENCES achievement (`achivementId`)
-        ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (`userId`) REFERENCES user_table(`userId`) ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY (`achievementId`) REFERENCES achievement(`achievementId`) ON UPDATE CASCADE ON DELETE CASCADE
 );
