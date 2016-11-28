@@ -16,7 +16,7 @@ const mocha = require('./build/tasks/test');
   sass,
   lintServer,
   lintClient,
-  template,
+  // template,
   start,
   watch,
   mocha
@@ -28,7 +28,7 @@ gulp.task( 'build', [
   'clean',
   'sass',
   'lint-client',
-  'templates',
+  // 'templates',
   'watch'
 ]);
 
