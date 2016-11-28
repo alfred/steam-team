@@ -1,0 +1,17 @@
+.action__btn {
+  font-size: 60px;
+  padding: 45px;
+
+  &.active {
+    background-color: #CDCDCD;
+  }
+
+  &:hover {
+    cursor: pointer;
+    background-color: #EFEFEF;
+  }
+}
+
+.action__prompt {
+  margin-bottom: 5%;
+}

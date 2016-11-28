@@ -137,6 +137,13 @@ describe( 'lib/resources/steam', () => {
       assert.equal( getVanityFromURL( vanityURL ), 'AtlasTehLeet' );
     });
 
+    it( 'returns non-vanity url if given one', () => {
+      let steam = require('rewire')( modulePath );
+      let getVanityFromURL = steam.__get__('getVanityFromURL');
+      let nonCustomUrl = 'http://steamcommunity.com/profiles/76561197972297924';
+
+      assert.equal( getVanityFromURL( nonCustomUrl ), 'http://steamcommunity.com/profiles/76561197972297924' );
+    });
   });
 
   describe( '#getUserIdFromVanityID', () => {
@@ -152,7 +159,7 @@ describe( 'lib/resources/steam', () => {
       assert.instanceOf( steam.getUserIdFromVanityID('AtlasTehLeet'), Promise );
     });
 
-    it( 'calls steamGET with a fully formed URL given a username', done => {
+    it( 'calls steamGET with a fully formed URL given a vanity id', done => {
       let steam = require('rewire')( modulePath );
 
       steam.__set__( 'steamGET', ( url, options ) => {
@@ -164,7 +171,7 @@ describe( 'lib/resources/steam', () => {
       steam.getUserIdFromVanityID('AtlasTehLeet');
     });
 
-    it( 'returns a userId given a username', done => {
+    it( 'returns a userId given a vanity id', done => {
       let steam = require('rewire')( modulePath );
       let mockResponse = {
         'response': {
@@ -176,6 +183,29 @@ describe( 'lib/resources/steam', () => {
       steam.getUserIdFromVanityID('AtlasTehLeet')
       .then( steamId => {
         assert.equal( steamId, '76561197997072425' );
+
+        done();
+      })
+      .catch( err => {
+        console.log( err );
+        assert.ok( false );
+        done( err );
+      });
+
+    });
+
+    it( 'returns a userId given a noncustom community url', done => {
+      let steam = require('rewire')( modulePath );
+      let mockResponse = {
+        'response': {
+          'steamid': '76561197972297924'
+        }
+      }
+      // steam.__set__( 'steamGET', () => Promise.resolve( mockResponse ) );
+
+      steam.getUserIdFromVanityID('http://steamcommunity.com/profiles/76561197972297924')
+      .then( steamId => {
+        assert.equal( steamId, '76561197972297924' );
 
         done();
       })
@@ -280,105 +310,246 @@ describe( 'lib/resources/steam', () => {
     });
   });
 
-  describe( '#getMostPopularGameFromVanityURLs', () => {
+  describe( '#getGamesFromVanityURLs', () => {
 
     it( 'is a function', () => {
       let steam = require('rewire')( modulePath );
+      let getGamesFromVanityURLs = steam.__get__('getGamesFromVanityURLs');
 
-      assert.isFunction( steam.getMostPopularGameFromVanityURLs );
+      assert.isFunction( getGamesFromVanityURLs );
     });
 
     it( 'returns a Promise', () => {
       let steam = require('rewire')( modulePath );
+      let getGamesFromVanityURLs = steam.__get__('getGamesFromVanityURLs');
       let communityURL = 'http://steamcommunity.com/id/AtlasTehLeet/';
 
-      assert.instanceOf( steam.getMostPopularGameFromVanityURLs( [ communityURL ] ), Promise );
+      assert.instanceOf( getGamesFromVanityURLs( [ communityURL ] ), Promise );
     });
 
-    it( 'returns the most popular game given a vanity url', done => {
+    xit( 'returns the merged game list', done => {
       let steam = require('rewire')( modulePath );
+      let getGamesFromVanityURLs = steam.__get__('getGamesFromVanityURLs');
       const mockId = "76561197997072425";
-      const mockStats = [
-        {
-          "appid": 4000,
-          "name": "Garry\'s Mod",
-          "playtime_forever": 79781,
-          "steamid": "76561197997072425"
-        }
+      let mockURLs = [
+        'http://steamcommunity.com/id/AtlasTehLeet/',
+        'http://steamcommunity.com/profiles/76561197972297924/'
       ];
 
-      let mockPopular = {
-        "appid": 4000,
-        "name": "Garry\'s Mod",
-        "playtime_forever": 79781,
-        "players" : [ { vanityId: 'AtlasTehLeet', steamid: '76561197997072425' } ]
-      };
-      let communityURL = 'http://steamcommunity.com/id/AtlasTehLeet/';
+      const mockMerged = [
+      {
+        "appid": 240,
+        "name": "Counter-Strike: Source",
+        "playtime_forever": 76827,
+        "img_icon_url": "9052fa60c496a1c03383b27687ec50f4bf0f0e10",
+        "img_logo_url": "ee97d0dbf3e5d5d59e69dc20b98ed9dc8cad5283",
+        "has_community_visible_stats": true,
+        "players": [
+        {
+          "vanityId": "AtlasTehLeet",
+          "steamid": "76561197997072425"
+        },
+        {
+          "vanityId": "http://steamcommunity.com/profiles/76561197972297924/",
+          "steamid": "76561197972297924"
+        }
+        ]
+      },
+      {
+        "appid": 300,
+        "name": "Day of Defeat: Source",
+        "playtime_forever": 322,
+        "img_icon_url": "062754bb5853b0534283ae27dc5d58200692b22d",
+        "img_logo_url": "e3a4313690bd551495a88e1c01951eb26cec7611",
+        "has_community_visible_stats": true,
+        "players": [
+        {
+          "vanityId": "AtlasTehLeet",
+          "steamid": "76561197997072425"
+        },
+        {
+          "vanityId": "http://steamcommunity.com/profiles/76561197972297924/",
+          "steamid": "76561197972297924"
+        }
+        ]
+      }];
 
-      steam.__set__( 'getUserIdFromVanityID', () => Promise.resolve( mockId ) );
-      steam.__set__( 'getOwnedGamesByUserId', () => Promise.resolve( mockStats ) );
-      steam.getMostPopularGameFromVanityURLs( [ communityURL ], 'playtime' )
-      .then( pop => {
-        assert.deepEqual( pop, mockPopular );
+      getGamesFromVanityURLs( mockURLs )
+      .then( mergedGames => {
+        assert.sameDeepMembers( mergedGames.slice( 0, 2 ), mockMerged );
         done();
       })
       .catch( err => {
         assert.ok( false );
         done( err );
-      })
-
-    });
-
-    it( 'returns the most popular game given a vanity url', done => {
-      let steam = require('rewire')( modulePath );
-      const mockId = "76561197997072425";
-      const mockStats = [
-        {
-          "appid": 4000,
-          "name": "Garry\'s Mod",
-          "playtime_forever": 79781,
-          "steamid": "76561197997072425"
-        }
-      ];
-
-      let mockPopular = {
-        "appid": 4000,
-        "name": "Garry\'s Mod",
-        "playtime_forever": 79781,
-        "players" : [ { vanityId: 'AtlasTehLeet', steamid: '76561197997072425' } ]
-      };
-      let communityURL = 'http://steamcommunity.com/id/AtlasTehLeet/';
-
-      steam.__set__( 'getUserIdFromVanityID', () => Promise.resolve( mockId ) );
-      steam.__set__( 'getOwnedGamesByUserId', () => Promise.resolve( mockStats ) );
-      steam.getMostPopularGameFromVanityURLs( [ communityURL ], 'ownership' )
-      .then( pop => {
-        assert.deepEqual( pop, mockPopular );
-        done();
-      })
-      .catch( err => {
-        assert.ok( false );
-        done( err );
-      })
+      });
 
     });
 
     it( 'throws an error if steam fucks up', done => {
       let steam = require('rewire')( modulePath );
+      let getGamesFromVanityURLs = steam.__get__('getGamesFromVanityURLs');
+
       steam.__set__( 'steamGET', () => {
         return Promise.reject( new Error() );
       });
-      let communityURL = 'http://steamcommunity.com/id/AtlasTehLeet/';
 
-      steam.getMostPopularGameFromVanityURLs( [ communityURL ] )
+      getGamesFromVanityURLs( [] )
       .then( res => {
         assert.ok( false );
-        done( res );
+        done();
       })
       .catch( err => {
         assert.ok( true );
         done();
       });
     });
+  });
+
+  describe( '#getMostPopularGameByPlaytime', () => {
+
+    it( 'is a function', () => {
+      let steam = require('rewire')( modulePath );
+
+      assert.isFunction( steam.getMostPopularGameByPlaytime );
+    });
+
+    it( 'returns a Promise', () => {
+      let steam = require('rewire')( modulePath );
+
+      assert.instanceOf( steam.getMostPopularGameByPlaytime([]), Promise );
+    });
+
+    it( 'resolves to game obj with highest playtime', done => {
+      let steam = require('rewire')( modulePath );
+      const mockStats = [
+        {
+          "appid": 240,
+          "name": "Counter-Strike: Source",
+          "playtime_forever": 68967,
+          "steamid": "76561197997072425"
+        },
+        {
+          "appid": 4000,
+          "name": "Garry\'s Mod",
+          "playtime_forever": 79781,
+          "steamid": "76561197997072425"
+        },
+
+      ];
+      steam.__set__( 'getGamesFromVanityURLs', () => {
+        return Promise.resolve( mockStats );
+      });
+
+      steam.getMostPopularGameByPlaytime([])
+      .then( res => {
+        assert.deepEqual( res, {
+          "appid": 4000,
+          "name": "Garry\'s Mod",
+          "playtime_forever": 79781,
+          "steamid": "76561197997072425"
+        });
+        done();
+      })
+      .catch( err => {
+        assert.ok( false );
+        done( err );
+      });
+
+    });
+
+    it( 'throws an error if something fucks up', done => {
+      let steam = require('rewire')( modulePath );
+
+      steam.__set__( 'steamGET', () => Promise.reject( new Error() ) );
+
+      steam.getMostPopularGameByPlaytime(['fwm'])
+      .then( res => {
+        assert.ok( false );
+        done();
+      })
+      .catch( err => {
+        assert.ok( true );
+        done();
+      })
+    });
+  });
+
+  describe( '#getMostPopularGameByOwnership', () => {
+    it( 'is a function', () => {
+      let steam = require('rewire')( modulePath );
+
+      assert.isFunction( steam.getMostPopularGameByOwnership );
+    });
+
+    it( 'returns a Promise', () => {
+      let steam = require('rewire')( modulePath );
+
+      assert.instanceOf( steam.getMostPopularGameByOwnership([]), Promise );
+    });
+
+    it( 'resolves to game obj with highest ownership', done => {
+      let steam = require('rewire')( modulePath );
+      const mockStats = [
+        {
+          "appid": 240,
+          "name": "Counter-Strike: Source",
+          "playtime_forever": 68967,
+          "players": [
+            {
+              "steamid": "76561197997072425"
+            }
+          ]
+
+        },
+        {
+          "appid": 4000,
+          "name": "Garry\'s Mod",
+          "playtime_forever": 79781,
+          "players": [
+            {
+              "steamid": "76561197997072425"
+            }
+          ]
+        },
+
+      ];
+      steam.__set__( 'getGamesFromVanityURLs', () => {
+        return Promise.resolve( mockStats );
+      });
+
+      steam.getMostPopularGameByOwnership([])
+      .then( res => {
+        assert.deepEqual( res, {
+          "appid": 240,
+          "name": "Counter-Strike: Source",
+          "playtime_forever": 68967,
+          players: [ { steamid: '76561197997072425' } ]
+        });
+        done();
+      })
+      .catch( err => {
+        assert.ok( false );
+        done( err );
+      });
+
+    });
+
+    it( 'throws an error if something fucks up', done => {
+      let steam = require('rewire')( modulePath );
+
+      steam.__set__( 'steamGET', () => Promise.reject( new Error() ) );
+
+      steam.getMostPopularGameByOwnership(['fwm'])
+      .then( res => {
+        assert.ok( false );
+        done();
+      })
+      .catch( err => {
+        assert.ok( true );
+        done();
+      })
+    });
+
   });
 });
