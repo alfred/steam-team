@@ -3,7 +3,7 @@
 ## Setup
 
 #### Install Node.js
-1. Install (HomeBrew)[http://brew.sh/]
+1. Install [HomeBrew](http://brew.sh/)
 2. Install `nvm` via `brew install nvm` and follow the prompts
 3. Install `node` via `nvm install v6.8.1`
 
