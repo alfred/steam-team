@@ -79,6 +79,7 @@ function createPlaytimeTemplate( game ) {
         '<h3>Most Popular Game is...</h3>' +
         '<h2><strong>' + game.name + '</strong></h2>' +
         '<p>With ' + Math.floor( game.playtime_forever / 60 ) + ' hours of playtime!</p>' +
+        '<a href="/">Go again?</a>' +
         '</div>';
 
   return $( templ );
@@ -91,6 +92,7 @@ function createOwnershipTemplate( game ) {
         '<p>With ' + game.players.length + ' of the profile' +
         ( game.players.length > 1 ? 's' : '' ) +
         ' added owning it!</p>' +
+        '<a href="/">Go again?</a>' +
         '</div>';
 
   return $( templ );
