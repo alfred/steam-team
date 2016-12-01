@@ -57,13 +57,41 @@ function bindFormSubmitButtons() {
       url : '/steam/popular/playtime',
       contentType: 'application/json',
       data: JSON.stringify({ vanityURLs: inputVanityURLs }),
+      beforeSend: function() {
+        // $('.action__form').addClass('disabled');
+      },
       success: function( response ) {
-        // Do something with data
-        console.log( response );
+        var $resultContainer = $('.action__result');
+
+        $resultContainer.append( createPlaytimeTemplate ( response ) );
+        $('.action__result').removeClass('hidden');
+
       },
       error: function( err ) {
         console.log( err );
       }
     });
   });
+}
+
+function createPlaytimeTemplate( game ) {
+  var templ = '<div class="col-md-12 text-center">' +
+        '<h3>Most Popular Game is...</h3>' +
+        '<h2><strong>' + game.name + '</strong></h2>' +
+        '<p>With ' + Math.floor( game.playtime_forever / 60 ) + ' hours of playtime!</p>' +
+        '</div>';
+
+  return $( templ );
+}
+
+function createOwnershipTemplate( game ) {
+  var templ = '<div class="col-md-12 text-center">' +
+        '<h3>Most Popular Game is...</h3>' +
+        '<h2><strong>' + game.name + '</strong></h2>' +
+        '<p>With ' + game.players.length + ' of the profile' +
+        ( game.players.length > 1 ? 's' : '' ) +
+        ' added owning it!</p>' +
+        '</div>';
+
+  return $( templ );
 }
