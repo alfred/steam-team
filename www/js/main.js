@@ -52,9 +52,11 @@ function bindFormSubmitButtons() {
     var rawInput = $('.form__textinput').val();
     var inputVanityURLs = rawInput.split('/n');
 
+    var pathToHit = $('.action__btn.active').attr('data-path');
+
     $.ajax({
       method: 'POST',
-      url : '/steam/popular/playtime',
+      url : pathToHit,
       contentType: 'application/json',
       data: JSON.stringify({ vanityURLs: inputVanityURLs }),
       beforeSend: function() {
