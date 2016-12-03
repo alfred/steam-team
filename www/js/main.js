@@ -48,6 +48,7 @@ function showFormTextArea() {
 function bindFormSubmitButtons() {
   $('.bust-cache').on( 'click', function( e ) {
     e.preventDefault();
+    $('.action__result').addClass('hidden');
 
     var rawInput = $('.form__textinput').val();
     var inputVanityURLs = rawInput.split('/n');
@@ -60,7 +61,7 @@ function bindFormSubmitButtons() {
       contentType: 'application/json',
       data: JSON.stringify({ vanityURLs: inputVanityURLs }),
       beforeSend: function() {
-        // $('.action__form').addClass('disabled');
+
       },
       success: function( response ) {
         var $resultContainer = $('.action__result');
