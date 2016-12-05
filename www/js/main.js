@@ -57,7 +57,7 @@ function bindFormSubmitButtons() {
 
     $.ajax({
       method: 'POST',
-      url : pathToHit,
+      url : '/steam' + pathToHit,
       contentType: 'application/json',
       data: JSON.stringify({ vanityURLs: inputVanityURLs }),
       beforeSend: function() {
@@ -66,17 +66,53 @@ function bindFormSubmitButtons() {
       success: function( response ) {
         var $resultContainer = $('.action__result');
 
-        if( pathToHit.indexOf('playtime') === 1 ) {
+        if( pathToHit.indexOf('playtime') !== -1 ) {
           $resultContainer.append( createPlaytimeTemplate( response ) );
-        } else if ( pathToHit.indexOf('ownership') === 1 ) {
+        } else if ( pathToHit.indexOf('ownership') !== -1 ) {
           $resultContainer.append( createOwnershipTemplate( response ) );
-        } else if ( pathToHit.indexOf('delete') === 1 ) {
+        } else if ( pathToHit.indexOf('delete') !== -1 ) {
           $resultContainer.append( createDeletedTemplate() );
         } else {
           // Wow error checking might be rough ya know
         }
 
+        $('.action__result').removeClass('hidden');
+      },
+      error: function( err ) {
+        console.log( err );
+      }
+    });
+  });
 
+  $('.use-cache').on( 'click', function( e ) {
+    e.preventDefault();
+    $('.action__result').addClass('hidden');
+
+    var rawInput = $('.form__textinput').val();
+    var inputVanityURLs = rawInput.split('/n');
+
+    var pathToHit = $('.action__btn.active').attr('data-path');
+
+    $.ajax({
+      method: 'POST',
+      url : '/api' + pathToHit,
+      contentType: 'application/json',
+      data: JSON.stringify({ vanityURLs: inputVanityURLs }),
+      beforeSend: function() {
+
+      },
+      success: function( response ) {
+        var $resultContainer = $('.action__result');
+
+        if( pathToHit.indexOf('playtime') !== -1 ) {
+          $resultContainer.append( createPlaytimeTemplate( response ) );
+        } else if ( pathToHit.indexOf('ownership') !== -1 ) {
+          $resultContainer.append( createOwnershipTemplate( response ) );
+        } else if ( pathToHit.indexOf('delete') !== -1 ) {
+          $resultContainer.append( createDeletedTemplate() );
+        } else {
+          // Wow error checking might be rough ya know
+        }
 
         $('.action__result').removeClass('hidden');
       },
@@ -112,10 +148,12 @@ function createOwnershipTemplate( game ) {
 }
 
 function createDeletedTemplate() {
-  var templ = '<div class="alert alert-success" role="alert">' +
+  var templ = '<div class="row big-margin-top">' +
+        '<div class="alert alert-success" role="alert">' +
         '<strong>Success!</strong>' +
-        'All users successfully deleted' +
+        ' All users successfully deleted' +
         '<a class="pull-right" href="/">Reset</a>' +
+        '</div>' +
         '</div>';
 
   return $( templ );
