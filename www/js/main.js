@@ -66,9 +66,19 @@ function bindFormSubmitButtons() {
       success: function( response ) {
         var $resultContainer = $('.action__result');
 
-        $resultContainer.append( createPlaytimeTemplate ( response ) );
-        $('.action__result').removeClass('hidden');
+        if( pathToHit.indexOf('playtime') === 1 ) {
+          $resultContainer.append( createPlaytimeTemplate( response ) );
+        } else if ( pathToHit.indexOf('ownership') === 1 ) {
+          $resultContainer.append( createOwnershipTemplate( response ) );
+        } else if ( pathToHit.indexOf('delete') === 1 ) {
+          $resultContainer.append( createDeletedTemplate() );
+        } else {
+          // Wow error checking might be rough ya know
+        }
 
+
+
+        $('.action__result').removeClass('hidden');
       },
       error: function( err ) {
         console.log( err );
@@ -96,6 +106,16 @@ function createOwnershipTemplate( game ) {
         ( game.players.length > 1 ? 's' : '' ) +
         ' added owning it!</p>' +
         '<a href="/">Go again?</a>' +
+        '</div>';
+
+  return $( templ );
+}
+
+function createDeletedTemplate() {
+  var templ = '<div class="alert alert-success" role="alert">' +
+        '<strong>Success!</strong>' +
+        'All users successfully deleted' +
+        '<a class="pull-right" href="/">Reset</a>' +
         '</div>';
 
   return $( templ );
