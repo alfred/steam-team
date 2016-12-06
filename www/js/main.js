@@ -46,80 +46,48 @@ function showFormTextArea() {
 };
 
 function bindFormSubmitButtons() {
-  $('.bust-cache').on( 'click', function( e ) {
-    e.preventDefault();
-    $('.action__result').addClass('hidden');
+  $('.bust-cache').on( 'click', sendAjaxAndUpdateDOM );
 
-    var rawInput = $('.form__textinput').val();
-    var inputVanityURLs = rawInput.split('/n');
+  $('.use-cache').on( 'click', sendAjaxAndUpdateDOM );
+}
 
-    var pathToHit = $('.action__btn.active').attr('data-path');
+function sendAjaxAndUpdateDOM( e ) {
+  e.preventDefault();
+  $('.action__result').addClass('hidden');
 
-    $.ajax({
-      method: 'POST',
-      url : '/steam' + pathToHit,
-      contentType: 'application/json',
-      data: JSON.stringify({ vanityURLs: inputVanityURLs }),
-      beforeSend: function() {
+  var rawInput = $('.form__textinput').val();
+  var inputVanityURLs = rawInput.split('/n');
+  var pathToHit = $('.action__btn.active').attr('data-path');
 
-      },
-      success: function( response ) {
-        var $resultContainer = $('.action__result');
+  var urlPrefix = e.currentTarget.className.indexOf('bust-') !== -1 ? '/steam' : '/api';
 
-        if( pathToHit.indexOf('playtime') !== -1 ) {
-          $resultContainer.append( createPlaytimeTemplate( response ) );
-        } else if ( pathToHit.indexOf('ownership') !== -1 ) {
-          $resultContainer.append( createOwnershipTemplate( response ) );
-        } else if ( pathToHit.indexOf('delete') !== -1 ) {
-          $resultContainer.append( createDeletedTemplate() );
-        } else {
-          // Wow error checking might be rough ya know
-        }
 
-        $('.action__result').removeClass('hidden');
-      },
-      error: function( err ) {
-        console.log( err );
+  $.ajax({
+    method: 'POST',
+    url : urlPrefix + pathToHit,
+    contentType: 'application/json',
+    data: JSON.stringify({ vanityURLs: inputVanityURLs }),
+    beforeSend: function() {
+
+    },
+    success: function( response ) {
+      var $resultContainer = $('.action__result');
+
+      if( pathToHit.indexOf('playtime') !== -1 ) {
+        $resultContainer.append( createPlaytimeTemplate( response ) );
+      } else if ( pathToHit.indexOf('ownership') !== -1 ) {
+        $resultContainer.append( createOwnershipTemplate( response ) );
+      } else if ( pathToHit.indexOf('delete') !== -1 ) {
+        $resultContainer.append( createDeletedTemplate() );
+      } else {
+        // Wow error checking might be rough ya know
       }
-    });
-  });
 
-  $('.use-cache').on( 'click', function( e ) {
-    e.preventDefault();
-    $('.action__result').addClass('hidden');
-
-    var rawInput = $('.form__textinput').val();
-    var inputVanityURLs = rawInput.split('/n');
-
-    var pathToHit = $('.action__btn.active').attr('data-path');
-
-    $.ajax({
-      method: 'POST',
-      url : '/api' + pathToHit,
-      contentType: 'application/json',
-      data: JSON.stringify({ vanityURLs: inputVanityURLs }),
-      beforeSend: function() {
-
-      },
-      success: function( response ) {
-        var $resultContainer = $('.action__result');
-
-        if( pathToHit.indexOf('playtime') !== -1 ) {
-          $resultContainer.append( createPlaytimeTemplate( response ) );
-        } else if ( pathToHit.indexOf('ownership') !== -1 ) {
-          $resultContainer.append( createOwnershipTemplate( response ) );
-        } else if ( pathToHit.indexOf('delete') !== -1 ) {
-          $resultContainer.append( createDeletedTemplate() );
-        } else {
-          // Wow error checking might be rough ya know
-        }
-
-        $('.action__result').removeClass('hidden');
-      },
-      error: function( err ) {
-        console.log( err );
-      }
-    });
+      $('.action__result').removeClass('hidden');
+    },
+    error: function( err ) {
+      console.log( err );
+    }
   });
 }
 
