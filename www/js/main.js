@@ -68,7 +68,7 @@ function sendAjaxAndUpdateDOM( e ) {
     contentType: 'application/json',
     data: JSON.stringify({ vanityURLs: inputVanityURLs }),
     beforeSend: function() {
-
+      $('.action__result').empty();
     },
     success: function( response ) {
       var $resultContainer = $('.action__result');
