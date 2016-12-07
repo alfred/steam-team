@@ -56,7 +56,7 @@ function sendAjaxAndUpdateDOM( e ) {
   $('.action__result').addClass('hidden');
 
   var rawInput = $('.form__textinput').val();
-  var inputVanityURLs = rawInput.split('/n');
+  var inputVanityURLs = rawInput.split('\n');
   var pathToHit = $('.action__btn.active').attr('data-path');
 
   var urlPrefix = e.currentTarget.className.indexOf('bust-') !== -1 ? '/steam' : '/api';
