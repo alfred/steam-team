@@ -51,3 +51,19 @@ If you drop the .zip file for this project into any directory on a Linux/OS X ma
 
 **9. BONUS POINTS: overly complicated translations from user operations to database operations (1-5 points)**
 - Algorithms developed for transforming the data from the Steam Web API, and then to find the most popular game by playtime all written via code, _could_ be translated to SQL, but it made more sense to transform it via code, and then write the algorithm in code.
+
+### Test Steam Profiles
+Literally you can copy and paste this in and populate your database
+
+```
+http://steamcommunity.com/id/AtlasTehLeet/
+http://steamcommunity.com/profiles/76561197972297924
+http://steamcommunity.com/id/k0nspiracy
+http://steamcommunity.com/id/dysxqer
+http://steamcommunity.com/profiles/76561198075021841
+http://steamcommunity.com/profiles/76561197972297924
+http://steamcommunity.com/profiles/76561198121425666
+http://steamcommunity.com/profiles/76561197989294241
+http://steamcommunity.com/id/DonPatchie
+http://steamcommunity.com/id/Darthrob1016
+```
